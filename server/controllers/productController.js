@@ -23,7 +23,7 @@ const getProduct =  async(req,res)=>{
 
     const product = await Product.findById(productId)
     
-    if(!products || !product.isActive){
+    if(!product || !product.isActive){
         res.status(404)
         throw new Error("Product not found")
     }

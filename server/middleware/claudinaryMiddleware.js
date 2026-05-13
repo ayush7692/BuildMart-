@@ -1,5 +1,5 @@
 const { v2: cloudinary } = require("cloudinary");
-const fs = require("node:fs")
+const fs = require("fs")
 require ('dotenv').config()
 
 
@@ -16,6 +16,7 @@ cloudinary.config({
 
 const uploadToCloudinary = async(fileLink) => {
 
+   
 
     // Upload an image
     const uploadResult = await cloudinary.uploader

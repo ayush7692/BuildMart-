@@ -20,6 +20,8 @@ const authrouter = require('./Routes/authRoute')
 const adminRouter = require('./Routes/adminRoute') 
 const vendorRouter = require('./Routes/vendorRoute')
 const productsRouter = require('./Routes/productRoute')
+const coupenRouter = require('./Routes/coupenRoute')
+const cartRouter = require('./Routes/cartRoute')
 const errorHandle = require('./middleware/errorHandle')
 
 
@@ -36,6 +38,12 @@ app.use('/api/vendor',vendorRouter)
 
 // Products 
 app.use('/api/products',productsRouter)
+
+// Coupen
+app.use('/api/coupens',coupenRouter)
+
+// Cart 
+app.use('/api/cart',cartRouter)
 
 // API Testing
 app.get('/',(req,res)=>{

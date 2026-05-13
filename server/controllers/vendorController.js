@@ -1,5 +1,5 @@
 
-const fs = require("node:fs")
+const fs = require('fs');
 const Product = require("../models/productModel")
 const Vendor = require("../models/vendorModel")
 const uploadToCloudinary = require("../middleware/claudinaryMiddleware")
@@ -50,7 +50,7 @@ const becomeVendor = async(req,res)=>{
 
 const addProduct = async (req, res) => {
     const userId = req.user._id
-    const image = req.file.path
+  
    
 
     const vendor = await Vendor.findOne({ user: userId })
@@ -62,24 +62,23 @@ const addProduct = async (req, res) => {
 
     const { name, description, price, category, stock } = req.body
 
-    if (!name || !description || !price || !category || !stock ||!image) {
+    if (!name || !description || !price || !category || !stock ||!req.file.path) {
         res.status(409)
         throw new Error("Please Fill All Details!")
     }
     
-    console.log(image)
 
     // Uplode image 
-    // let uploadResult = uploadToCloudinary(image)
+    let uploadResult = await uploadToCloudinary(req.file.path)
 
-    // console.log(uploadResult)
+  
 
     // remove from server 
-    // fs.unlinkSync(image)
-     
-
-
-    const product = await Product.create({ name, description, price, category, stock, image:image , vendor: vendor._id })
+    fs.unlinkSync(req.file.path)
+    
+    
+    
+    const product = await Product.create({ name, description, price, category, stock, image:uploadResult.secure_url , vendor: vendor._id })
 
     if (!product) {
         res.json(409)
