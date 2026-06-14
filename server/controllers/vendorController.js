@@ -2,7 +2,9 @@
 const fs = require('fs');
 const Product = require("../models/productModel")
 const Vendor = require("../models/vendorModel")
-const uploadToCloudinary = require("../middleware/claudinaryMiddleware")
+const uploadToCloudinary = require("../middleware/claudinaryMiddleware");
+const Coupon = require('../models/coupenModel');
+const Order = require('../models/orderModel');
 
 
 const becomeVendor = async(req,res)=>{
@@ -182,9 +184,131 @@ const getvendor =  async(req,res)=>{
     res.status(200).json(vendor) 
 }
 
+const createCoupon = async(req,res)=>{
+    const {couponCode,couponDiscount} = req.body
+    const userId = req.user
+
+    const vendor = await Vendor.findOne({user:userId})
+
+    if (!vendor) {
+        res.status(404)
+        throw new Error("Vendor not found")
+    }
+        if (!couponCode || !couponDiscount) {
+        res.status(409)
+        throw new Error("Please Fill All Details!")
+    }
+
+    const coupon = await Coupon.create({
+        couponCode,couponDiscount,vendor:vendor._id
+    })
+
+        if (!coupon) {
+        res.status(409)
+        throw new Error("Coupon Not Created")
+    }
+
+
+    res.status(201).json(coupon)
+
+
+}
+const updateCoupon = async(req,res)=>{
+    const couponId = req.params.cid
+    const {couponCode,couponDiscount} = req.body
+    const userId = req.user
+
+    const vendor = await Vendor.findOne({user:userId})
+
+    if (!vendor) {
+        res.status(404)
+        throw new Error("Vendor not found")
+    }
+        if (!couponCode || !couponDiscount) {
+        res.status(409)
+        throw new Error("Please Fill All Details!")
+    }
+
+    const coupon = await Coupon.findByIdAndUpdate(couponId,{couponCode,couponDiscount},{new:true})
+
+        if (!coupon) {
+        res.status(409)
+        throw new Error("Coupon Not Created")
+    }
 
 
 
+    res.status(201).json(coupon)
 
 
-module.exports = {becomeVendor,addProduct,getMyProduct,updateProducts,getVendors,getvendor}
+}
+
+const getMyOrder = async(req,res)=>{
+    const userId = req.user._id
+
+    const vendor = await Vendor.findOne({user:userId})
+
+        if (!vendor) {
+        res.status(404)
+        throw new Error("Vendor not found")
+    }
+
+
+    const orders = await Order.findOne({vendor:vendor._id}).populate('user').populate("products.product")
+        if (!orders) {
+        res.status(404)
+        throw new Error("Orders Not Found!")
+    }
+
+
+    res.json(orders)
+}
+
+const getUserOrder = async(req,res)=>{
+    const userId = req.user._id
+    const orderId = req.params.oid
+
+    const vendor = await Vendor.findOne({user:userId})
+
+        if (!vendor) {
+        res.status(404)
+        throw new Error("Vendor not found")
+    }
+
+    const orders = await Order.findById(orderId).populate("user").populate("products.product")
+
+    res.status(200).json(orders)
+
+}
+
+const updateOrder = async(req,res)=>{
+    const userId = req.user._id
+    const orderId = req.params.oid
+    const {status} = req.body
+
+
+    if (!status) {
+        res.json(409)
+        throw new Error("Please Enter Status!")
+    }
+
+    const vendor = await Vendor.findOne({user:userId})
+
+        if (!vendor) {
+        res.status(404)
+        throw new Error("Vendor not found")
+    }
+
+    const upadatedOrder = await Order.findByIdAndUpdate(orderId,{status},{new:true})
+
+        if (!updatedOrder) {
+        res.status(409)
+        throw new Error("Order Not Updated!")
+    }
+
+    res.status(200).json(updatedOrder)
+}
+
+
+
+module.exports = {becomeVendor,addProduct,getMyProduct,updateProducts,getVendors,getvendor,createCoupon,updateCoupon,getMyOrder,getUserOrder,updateOrder}

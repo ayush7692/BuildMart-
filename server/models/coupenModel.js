@@ -1,18 +1,18 @@
 const { default: mongoose } = require("mongoose");
 const Vendor = require('../models/vendorModel')
 
-const coupenSchema = mongoose.Schema({
+const couponSchema = new mongoose.Schema({
     vendor:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Vendor",
         required:true
     },
-    coupenCode:{
+    couponCode:{
         type:String,
         required:true,
         
     },
-    coupenDiscount:{
+    couponDiscount:{
         type:Number ,
         required:true
     },
@@ -26,6 +26,7 @@ const coupenSchema = mongoose.Schema({
     timestamps: true
 })
 
-const Coupen = mongoose.model('Coupen',coupenSchema)
 
-module.exports  = Coupen
+const Coupon = mongoose.model('Coupon',couponSchema)
+
+module.exports  = Coupon

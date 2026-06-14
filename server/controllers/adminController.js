@@ -1,3 +1,4 @@
+const CreditRequest = require("../models/creditsRequestModel")
 const User = require("../models/userModel")
 const Vendor = require("../models/vendorModel")
 
@@ -46,7 +47,17 @@ const getAllProducts = async(req,res)=>{
 
 
 const getAllOrders = async(req,res)=>{
-    res.send("get all orders")
+   
+    const orders = await Order.find()
+
+    if (!orders) {
+        res.status(404)
+        throw new Error("Orders Not Found!")
+    }
+
+
+
+    res.status(200).json(orders)
 }
 
 const getAllRatings = async(req,res)=>{
@@ -92,10 +103,45 @@ const updateVendor = async(req,res)=>{
 
    res.status(200).json(vendor)
 
+}
 
+const updateCredits  = async(req,res)=>{
+    const requestId = req.params.rid
+    const {isGranted} = req.body
 
+    const status  = JSON.parse(isGranted)
+
+     if (!isGranted) {
+        res.status(409)
+        throw new Error('Status Not Found!')
+    }
+
+    const request = await CreditRequest.findOne({_id:requestId})
+     if (!request) {
+        res.status(404)
+        throw new Error("Credit Request Not Found!")
+    }
+
+    if(request){
+
+   const updateRequest = await User.findByIdAndUpdate(
+     request.user,
+     {
+       $set: { isGranted: status },
+       $inc: { credits: request.credits },
+     },
+     { new: true },).select("-password");
+       
+   
+    res.status(200).json({
+            message: "Credits Granted",
+            creditRequest: updateRequest})
+    }else{
+        res.status(409)
+        throw new Error("Credits Not Granted!")
+    }        
 
 }
 
 
-module.exports= {getAllUsers, getAllOrders, getAllProducts, getAllRatings, getAllVendors, updateUser, updateVendor}
+module.exports= {getAllUsers, getAllOrders, getAllProducts, getAllRatings, getAllVendors, updateUser, updateVendor,updateCredits}

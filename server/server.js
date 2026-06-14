@@ -8,7 +8,19 @@ const app = express()
 
 // MiddleWares
 app.use(express.json())
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
+
+// CORS Middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 
 // DB connection 
@@ -20,8 +32,11 @@ const authrouter = require('./Routes/authRoute')
 const adminRouter = require('./Routes/adminRoute') 
 const vendorRouter = require('./Routes/vendorRoute')
 const productsRouter = require('./Routes/productRoute')
-const coupenRouter = require('./Routes/coupenRoute')
+const couponRouter = require('./Routes/couponRoute')
 const cartRouter = require('./Routes/cartRoute')
+const orderRouter = require('./Routes/orderRoute')
+const imageRoutes = require('./Routes/generateImageRoute')
+const creditRoutes = require('./Routes/creditRoutes')
 const errorHandle = require('./middleware/errorHandle')
 
 
@@ -40,10 +55,20 @@ app.use('/api/vendor',vendorRouter)
 app.use('/api/products',productsRouter)
 
 // Coupen
-app.use('/api/coupens',coupenRouter)
+app.use('/api/coupons',couponRouter)
 
 // Cart 
 app.use('/api/cart',cartRouter)
+
+// Order
+app.use('/api/order',orderRouter)
+
+// image generate 
+app.use("/api/generate", imageRoutes)
+
+// Credits
+app.use("/api/credits", creditRoutes)
+
 
 // API Testing
 app.get('/',(req,res)=>{

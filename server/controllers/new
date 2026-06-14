@@ -1,0 +1,37 @@
+    // Find Users Cart
+    let cart = await Cart.findOne({ user: userId })
+
+    if (!cart) {
+        // Create new cart if does not exist
+        cart = new Cart({
+            user: userId,
+            products: [{ product: product, qty }]
+        })
+    } else {
+        // Check if product is already in cart
+            const productIndex = cart.products.findIndex((item) => {
+            return item.product.toString() === product
+        })
+            console.log(productIndex)
+        if (productIndex > -1) {
+            // Update Quantity if product exists
+            cart.products[productIndex].qty += parseInt(qty)
+            // console.log(cart.products[productIndex])
+
+            // Check total quantity against stock
+            if (cart.products[productIndex].qty > productExist.stock) {
+                res.status(400)
+                throw new Error("Quantity Exceeds Avaialable Stock")
+            }
+
+
+        } else {
+            // Add New Product To Cart
+            cart.products.push({ product: product, qty })
+        }
+    }
+
+    await cart.save()
+
+    // Populate Product Details For Response
+    await cart.populate("products.product")

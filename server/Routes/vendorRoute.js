@@ -1,8 +1,9 @@
 
 const express = require('express')
 const { forUser } = require('../middleware/authHandle')
-const { becomeVendor, addProduct, getMyProduct, updateProducts, getVendors, getvendor } = require('../controllers/vendorController')
+const { becomeVendor, addProduct, getMyProduct, updateProducts, getVendors, getvendor, createCoupon, updateCoupon, getMyOrder, getUserOrder, updatedOrder, updateOrder } = require('../controllers/vendorController')
 const upload = require('../middleware/imageUplodeMiddleware')
+
 
 const router = express.Router()
 
@@ -19,5 +20,15 @@ router.put('/product/:pid',forUser,upload.single('image'),updateProducts)
 
 router.get('/profiles',getVendors)
 router.get('/profiles/:vid',getvendor)
+
+// coupons
+router.post('/coupon',forUser,createCoupon)
+router.put("/coupon/:cid",forUser,updateCoupon)
+
+// Orders 
+
+router.get('/orders',forUser,getMyOrder)
+router.get('/orders/:oid',forUser,getUserOrder)
+router.put('/orders/:oid',forUser,updateOrder )
 
 module.exports = router

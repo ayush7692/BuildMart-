@@ -1,13 +1,14 @@
 const express = require('express')
 const { forUser } = require('../middleware/authHandle')
-const { getCart, addToCart, updateCart, removeCart } = require('../controllers/cartController')
+const { getCart, addToCart, updateCart, removeCartItem, clearCart } = require('../controllers/cartController')
 
 const router = express.Router()
 
 router.get("/", forUser, getCart)
 router.post("/", forUser, addToCart)
 router.put("/", forUser, updateCart)
-router.delete("/", forUser,removeCart)
+router.put("/:productId", forUser,removeCartItem)
+router.post("/clear", forUser,clearCart)
 
 
 

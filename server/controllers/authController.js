@@ -11,12 +11,16 @@ const registerUser = async(req,res)=>{
         throw new Error("Fill all details")
     }
 
-    console.log(req.body)
-    const emailExist = await User.findOne({email:email})
-    const numberExist = await User.findOne({phone:phone})
+    
+  const userExist = await User.findOne({
+    $or: [
+        { email: email },
+        { phone: phone }
+    ]
+  });
 
-    if(emailExist || numberExist){
-        throw new Error("Email or Phone Number is already in Use!")
+    if (userExist) {
+    throw new Error("Email or Phone Number is already in Use!");
     }
 
     const hashPassword = await bcrypt.hash(password , 10)
@@ -79,7 +83,7 @@ const loginUser = async(req,res)=>{
 
 
 const jwtToken = (id)=>{
-    return token = jwt.sign({id},process.env.SECRET_KEY,{expiresIn:"7d"})
+    return token = jwt.sign({id},process.env.SECRET_KEY,{expiresIn:"30d"})
 }
 
 const private  = async(req,res)=>{

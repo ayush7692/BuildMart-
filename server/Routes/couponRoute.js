@@ -1,10 +1,11 @@
 const express = require('express')
-const getCoupens = require('../controllers/coupenController')
+const getCoupons = require('../controllers/couponController')
 const { forUser } = require('../middleware/authHandle')
+
 
 const router = express.Router()
 
-router.get('/',forUser,getCoupens)
+router.get('/',forUser,getCoupons)
 
 
 

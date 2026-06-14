@@ -1,6 +1,6 @@
 const express = require('express')
 const { forAdmin } = require('../middleware/authHandle')
-const { getAllUsers, getAllVendors, getAllProducts, getAllOrders, getAllRatings, updateUser, updateVendor } = require('../controllers/adminController')
+const { getAllUsers, getAllVendors, getAllProducts, getAllOrders, getAllRatings, updateUser, updateVendor, updateCredits } = require('../controllers/adminController')
 
 const router = express.Router()
 
@@ -15,6 +15,11 @@ router.get('/ratings',forAdmin,getAllRatings)
 
 router.put('/users/:uid',forAdmin,updateUser )
 router.put('/vendors/:vid',forAdmin,updateVendor)
+
+
+// Update Credits 
+
+router.put('/credits/:rid', forAdmin,updateCredits)
 
 
 

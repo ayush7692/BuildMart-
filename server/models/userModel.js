@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     isVendor:{
          type:Boolean,
          required:true,
-        default:false
+         default:false
     },
     credits:{
         type : Number,
