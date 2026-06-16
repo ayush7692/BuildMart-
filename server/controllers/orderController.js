@@ -5,8 +5,7 @@ const Order = require("../models/orderModel")
 
 const createOrder = async(req, res) => {
 
-    let userId = req.user.id
-
+    let userId = req.user._id
     let couponExists
 
     if (req.body.couponCode) {
@@ -79,7 +78,7 @@ const createOrder = async(req, res) => {
 const getMyOrders = async (req, res) => {
 
 
-    let userId = req.user.id
+    let userId = req.user._id
 
     const orders = await Order.find({ user: userId }).populate('products.product').populate('vendor')
 

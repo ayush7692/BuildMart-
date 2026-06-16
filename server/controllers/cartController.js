@@ -3,7 +3,7 @@ const Product = require("../models/productModel")
 
 const getCart = async(req,res)=>{
 
-    const userId  = req.user.id
+   const userId = req.user._id
 
     const cart = await Cart.findOne({user:userId}).populate("products.product")
 
@@ -17,7 +17,7 @@ const getCart = async(req,res)=>{
 
 const addToCart = async (req, res) => {
 
-    const userId = req.user.id
+    const userId = req.user._id
     const { product, qty } = req.body
 
     if (!product || qty== null) {
@@ -85,7 +85,7 @@ const addToCart = async (req, res) => {
 
 const updateCart = async (req, res) => {
       const { product, qty } = req.body
-      const userId = req.user
+      const userId = req.user._id
 
     if ( qty<1 || !product  ) {
         res.status(409)
@@ -109,7 +109,7 @@ const updateCart = async (req, res) => {
     const productIndex = cart.products.findIndex((item)=>{
         return item.product.toString() === product
     })
-        console.log(productIndex)
+        
     if(productIndex === -1){
         throw new Error("please add product in cart first")
 
@@ -117,7 +117,7 @@ const updateCart = async (req, res) => {
 
          cart.products[productIndex].qty = parseInt(qty)
 
-         console.log(cart.products[productIndex].qty)
+        
         if(cart.products[productIndex].qty> productExist.stock){
             res.status(409)
             throw new Error("limit exceed")
@@ -155,7 +155,7 @@ const removeCartItem = async (req, res) => {
 }
 
 const clearCart = async(req,res)=>{
-     const userId = req.user.id;
+     const userId = req.user._id
 
     const cart = await Cart.findOne({ user: userId });
 
